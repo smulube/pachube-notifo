@@ -1,0 +1,4 @@
+---
+notifo:
+  username: service_username
+  secret: service_secret
