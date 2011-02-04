@@ -1,6 +1,8 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    activesupport (3.0.3)
+    bcrypt-ruby (2.1.4)
     crack (0.1.8)
     haml (3.0.25)
     httparty (0.4.5)
@@ -31,6 +33,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport (= 3.0.3)
+  bcrypt-ruby (= 2.1.4)
   haml (= 3.0.25)
   json (= 1.5.1)
   rack-flash (= 0.1.1)

@@ -9,6 +9,8 @@ gem "rack-flash", "0.1.1"
 gem "unicorn", "3.3.1"
 gem "smulube-notifo", "0.1.1"
 gem "json", "1.5.1"
+gem "activesupport", "3.0.3"
+gem "bcrypt-ruby", "2.1.4"
 
 group :test do
   gem "rack-test", "0.5.6"
