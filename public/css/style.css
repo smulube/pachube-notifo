@@ -131,7 +131,7 @@ hr {
 /* lists, menu */
 
 ul, ul.menu, .item-list ul {
-  margin: 0 0 0¬ 0;
+  margin: 0 0 0 0;
   padding: 0 0 0 0em;
 list-style-type: inherit;
   list-style-image: inherit;
@@ -252,7 +252,7 @@ ul.menu li ul li ul li {
 *   layout styling
 ***********************/
 
-body, #page, #front, #second {
+body, #page, #front, #second, #inner-page {
   padding: 0;
   margin: 0;
 }
