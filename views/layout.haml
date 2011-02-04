@@ -1,9 +1,44 @@
 !!! 5
 %html
   %head
-    %title Hello Haml
+    %title Pachube Notifo Delivery Service
+    %meta{'http-equiv' => 'Content-Type', :content => 'text/html;charset=utf-8'}/
+    %link{:rel => "stylesheet", :type => "text/css", :href => "css/styles.css"}
+    -#%script{:src => "javascript/less-1.0.41.min.js", :type => "text/javascript"}
   %body
-    - if flash[:notice]
-      %div{:class => "notice"}
-        = flash[:notice]
-    = yield
+    %div{:id => "header_bar"}
+      %ul
+        %li{:id => "link_pachube"}
+          %a{:href => "http://www.pachube.com", :class => "external"}<
+            pachube.com
+        %li{:id => "link_community"}
+          %a{:href => "http://community.pachube.com", :class => "external"}<
+            pachube.community
+        %li{:id => "link_blog"}
+          %a{:href => "http://blog.pachube.com", :class => "external"}<
+            pachube.blog
+    %div{:id => "container"}
+      %div{:id => "logo_bar"}
+        %div{:id => "logo_image"}
+          %a{:href => "http://apps.pachube.com"}
+            %img{:id => "logo", :alt => "pachube.aps Home", :src => "images/logo-apps.png"}/
+        %div{:id => "logo_links"}
+          %ul{:class => "links_menu"}
+            %li
+              %a{:href => "http://community.pachube.com/about"}<
+                About us
+            %li
+              %a{:href => "http://community.pachube.com/quickstart"}<
+                Quickstart
+            %li
+              %a{:href => "http://community.pachube.com/tutorials"}<
+                Tutorials
+            %li
+              %a{:href => "http://community.pachube.com/forum"}<
+                Forums
+      %div{:id => "main_content"}
+        %div{:id => "main_content_header"}
+          %img{:src => "images/tit-icon-output_2.png", :alt => "Output - Use a Feed"}/
+        = yield
+    %script{:type => "text/javascript", :src => "http://code.jquery.com/jquery-1.5.min.js"}
+

@@ -1,2 +1,9 @@
-%h1 Hello Layout
-%p This should be in a layout
+%h1 Register new user
+
+- if flash[:notice]
+  %div{:class => "notice"}
+    = flash[:notice]
+
+%form{:method => "post", :action => "/users/register"}
+  %input{:name => "username", :type => "text"}
+  %input{:type => "submit", :value => "Register"}

@@ -1,0 +1,166 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+ *    v2.0b1 | 201101 
+ *       NOTE: WORK IN PROGRESS
+ *          USE WITH CAUTION AND TEST WITH ABANDON */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+      list-style: none;
+    }
+    blockquote, q {
+      quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+      content: '';
+      content: none;
+    }content
+
+    /* remember to define visible focus styles! 
+     * :focus {
+     * outline: ?????outline;
+     * } */
+
+/* remember to highlight inserts somehow! */
+ins {
+  text-decoration: none;
+}
+del {
+  text-decoration: line-through;
+}
+
+table {
+  border-tablecollapse: collapse;
+  border-spacing: 0;
+}
+
+/*
+ * Start of our styles
+ */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 10pt;
+  line-height: 1.7em;
+  background-color: #CFD0D0;
+}
+
+/*
+ * Header bar
+ */
+#header_bar {
+  background-color: #333333;
+  background-image: url("../images/bg-header.png");
+  height: 32px;
+  padding: 2px 0 0;
+}
+
+#header_bar a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+#header_bar ul {
+  float: left;
+  margin-left: 5px;
+}
+
+#header_bar li {
+  float: left;
+}
+
+#header_bar li a {
+  display: block;
+  float: left;
+  padding-left: 20px;
+  padding-right: 8px;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+#link_pachube {
+  background-image: url("../images/icon-pachube.png");
+  background-repeat: no-repeat;
+  background-position: 0px center;
+}
+
+#link_community {
+  background-image: url("../images/icon-community.png");
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+
+#link_blog {
+  background-image: url("../images/icon-blog.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  margin-left: 3px;
+}
+
+/**
+ * Container
+ */
+#container {
+  width: 970px;
+  margin: 0 auto;
+  background-color: white;
+}
+
+#logo_image {
+  float: left;
+  height: 100px;
+  padding-left: 10px;
+  padding-top: 10px;
+  width: 630px;
+}
+
+#logo_links ul {
+  float: left;
+  padding-top: 44px;
+}
+
+#logo_links li {
+  float: left;
+}
+
+#logo_links li a {
+  display: block;
+  color: #FF0066;
+  text-decoration: none;
+  padding: 3px 0.8em 0;
+  border-left: 1px solid #adadad;
+  font-size: 14px;
+}
+
+/**
+ * Main content 
+ */
+#main_content {
+  clear: both;
+}

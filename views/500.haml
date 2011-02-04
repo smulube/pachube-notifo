@@ -1,0 +1,8 @@
+%h1 Currently unable to process your request
+
+%p
+  I'm sorry but we are currently unable to process your request.
+
+- if flash[:notice]
+  %div{:class => "notice"}
+    = flash[:notice]
