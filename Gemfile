@@ -16,3 +16,7 @@ group :test do
   gem "rspec", "2.4.0"
   gem "rack-test", "0.5.6"
 end
+
+group :deploy do
+  gem "capistrano", "2.5.19"
+end
