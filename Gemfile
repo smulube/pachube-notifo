@@ -13,5 +13,6 @@ gem "activesupport", "3.0.3"
 gem "bcrypt-ruby", "2.1.4"
 
 group :test do
+  gem "rspec", "2.4.0"
   gem "rack-test", "0.5.6"
 end
