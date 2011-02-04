@@ -1,2 +1,2 @@
 require "pachube_notifo"
-run PachubeNotifo
+run Pachube::NotifoApp
