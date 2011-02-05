@@ -10,6 +10,7 @@ require "yaml"
 require "notifo"
 require "json"
 require "lib/exceptions"
+require "sinatra/basic_auth"
 
 module Pachube
 
@@ -23,6 +24,7 @@ module Pachube
 
   class NotifoApp < Sinatra::Base
     register Sinatra::SequelExtension
+    register Sinatra::BasicAuth
   
     helpers Sinatra::SequelHelper
   
@@ -35,6 +37,8 @@ module Pachube
     # Migration - I think the name of the migration is what controls whether or
     # not it's been run previously or not, so don't change this or bad things
     # might happen.
+    #
+    # TODO: Figure out how to put this stuff in a separate file
     migration "Create the users table" do
       database.create_table :users do
         primary_key :id
@@ -62,7 +66,7 @@ module Pachube
 
       # config options that should be set for all environments
       set :sessions, true
-      set :logging, true
+      set :logging, false
       set :haml, :format => :html5
       set :public, File.dirname(__FILE__) + "/public"
     
@@ -85,21 +89,10 @@ module Pachube
       require "models/user"
   
       # # Pass our Notifo object into the model base
-      # User.notifo = settings.notifo
+      User.notifo = settings.notifo
     end
   
     helpers do
-      # def set_status(notifo_response)
-      #   puts "Raising error for #{notifo_response.inspect}"
-      #   case notifo_response["response_code"]
-      #   when NOTIFO_NO_SUCH_USER, NOTIFO_FORBIDDEN, NOTIFO_SUBSCRIBE_FORBIDDEN
-      #     status 404
-      #     #raise Sinatra::NotFound, notifo_response["response_message"]
-      #   else
-      #     status 500
-      #     #raise Sinatra::ServerError, notifo_response["response_message"]/
-      #   end
-      # end
       def find_user
         @user = User.authenticate(params[:username], params[:secret])
         raise Sinatra::NotFound if @user.nil?
@@ -115,22 +108,41 @@ module Pachube
         raise ServiceUnavailable if database[:statistics][:id => 1][:monthly_count] > settings.monthly_usage_limit
       end
     end
+
+    # ------------------------------------------------------------------------------- 
+    # Before filters
+    # ------------------------------------------------------------------------------- 
   
     before '/users/:username/deliver' do
       find_user
       check_total_monthly_usage
     end
   
+    # ------------------------------------------------------------------------------- 
+    # Basic authorization stuff
+    # ------------------------------------------------------------------------------- 
+    authorize do |username, password|
+      username == "john" && password == "doe"
+    end
+
+    # ------------------------------------------------------------------------------- 
+    # Start of our actions
+    # ------------------------------------------------------------------------------- 
+    
     get "/" do
       haml :index
     end
-  
+
     post "/users/register" do
       @user = User.register(params[:username])
       flash[:notice] = "User registered successfully. You should have received a message containing your secret. You'll need this to start sending notifications"
       redirect "/"
     end
-  
+
+    post "/users/secret" do
+
+    end
+
     post "/users/:username/deliver" do
       trigger_content = JSON.parse(params[:body])
       response = @user.send_notification("'#{trigger_content["type"]}' event triggerd by feed #{trigger_content["environment"]["id"]}, datastream #{trigger_content["triggering_datastream"]["id"]} with a value of #{trigger_content["triggering_datastream"]["value"]} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://www.pachube.com/feeds/#{trigger_content["environment"]["id"]}")
@@ -148,14 +160,24 @@ module Pachube
     # Start of admin type actions that should be protected
     # ------------------------------------------------------------------------------- 
     
-    get "/users/:username" do
+    protect do
+      get "/admin" do
+        haml :"admin/index"
+      end
+    end
+
+    get "/admin/users/:username" do
       @user = User[:username => params[:username]]
       haml :"users/show"
     end
   
-    get "/users" do
+    get "/admin/users" do
       @users = User.all
       haml :"users/index"
+    end
+
+    get "/admin/statistics" do
+
     end
   
   end
