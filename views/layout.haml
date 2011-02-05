@@ -3,7 +3,8 @@
   %head
     %title pachube.apps | connecting environments, patching the planet | notifo app
     %meta{'http-equiv' => 'Content-Type', :content => 'text/html;charset=utf-8'}/
-    %link{:rel => "stylesheet", :type => "text/css", :href => "css/style.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/style.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/custom-theme/jquery-ui-1.8.9.custom.css"}
     %link{:rel => "shortcut icon", :href => "images/favicon.ico", :type => "image/x-icon"}/
   %body
     %div{:id => "page", :class => "one-sidebar two-sidebars"}
@@ -22,7 +23,7 @@
         %div{:id => "header"}
           %div{:id => "logo-title"}
             %a{:href => "http://apps.pachube.com/", :title => "Home"}<
-              %img{:src => "images/logo-apps.png", :alt => "pachube.apps", :id => "logo"}
+              %img{:src => "/images/logo-apps.png", :alt => "pachube.apps", :id => "logo"}
           %div{:class => "clear-block"}
             %div{:id => "primary"}
               %ul{:class => "links-menu"}
@@ -38,14 +39,14 @@
             %div{:id => "main-wrapper"}
               %div{:id => "main"}
                 %div{:id => "output-bar-internal"}
-                  %img{:src => "images/tit-icon-output_2.png", :alt => "Output - Use a Feed"}
+                  %img{:src => "/images/tit-icon-output_2.png", :alt => "Output - Use a Feed"}
                 %div{:id => "content-wrapper-output"}
                   = yield
               %div{:id => "p-footer"}
                 %div{:id => "p-footer_container", :class => "p-container"}
                   %div{:class => "view-left-footer"}
                     %a{:class => "external", :href => "http://www.connectedenvironments.com/"}<
-                      %img{:src => "images/logo_ce.png", :alt => "Connected Environments"}
+                      %img{:src => "/images/logo_ce.png", :alt => "Connected Environments"}
                   %div{:class => "view-col-footer"}
                     %a{:class => "external", :href => "http://www.pachube.com/terms_of_service"}<
                       Terms of Service
@@ -78,16 +79,19 @@
                     %br/
                     %a{:class => "external", :href => "http://www.twitter.com/pachube"}<
                       Follow @pachube 
-                      %img{:alt => "Twitter", :src => "images/ico_tweeter.png"}
+                      %img{:alt => "Twitter", :src => "/images/ico_tweeter.png"}
                     %br/
                     %a{:class => "external", :href => "http://www.twitter.com/pachube_dev"}<
                       Follow @pachube_dev
-                      %img{:alt => "Twitter", :src => "images/ico_tweeter.png"}
+                      %img{:alt => "Twitter", :src => "/images/ico_tweeter.png"}
                     %br/
                     %a{:class => "external", :href => "http://www.youtube.com/Pachubevideos"}<
                       Follow on Youtube
-                      %img{:alt => "Youtube", :src => "images/ico_youtube.png"}
+                      %img{:alt => "Youtube", :src => "/images/ico_youtube.png"}
                     %br/
 
     %script{:type => "text/javascript", :src => "http://code.jquery.com/jquery-1.5.min.js"}
+    %script{:type => "text/javascript", :src => "/javascript/jquery-ui-1.8.9.custom.min.js"}
+    %script{:type => "text/javascript", :src => "/javascript/jquery.cookie-min.js"}
+    %script{:type => "text/javascript", :src => "/javascript/application.js"}
 
