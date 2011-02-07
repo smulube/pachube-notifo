@@ -4,7 +4,7 @@ class ServiceUnavailable < StandardError
   end
 end
 
-class NotRegistered < StandardError
+class Forbidden < StandardError
   def code
     403
   end
