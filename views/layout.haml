@@ -3,93 +3,32 @@
   %head
     %title pachube.apps | connecting environments, patching the planet | notifo app
     %meta{'http-equiv' => 'Content-Type', :content => 'text/html;charset=utf-8'}/
-    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/style.css"}
-    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/custom-theme/jquery-ui-1.8.9.custom.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/styles.css", :media => "all"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/custom-theme/jquery-ui-1.8.9.custom.css", :media => "all"}
     %link{:rel => "shortcut icon", :href => "images/favicon.ico", :type => "image/x-icon"}/
+    %meta{:name => "viewport", :content => "width=device-width; initial-scale=1"}/
   %body
-    %div{:id => "page", :class => "one-sidebar two-sidebars"}
-      %div{:id => "header_bar"}
-        %div{:id => "header-left"}
-          %div{:id => "link-pachube"}
-            %a{:href => "http://pachube.com/"}<
-              pachube.com
-          %div{:id => "link-community"}
-            %a{:href => "http://community.pachube.com/"}<
-              pachube.community
-          %div{:id => "link-blog"}
-            %a{:href => "http://blog.pachube.com/"}<
-              pachube.blog
-      %div{:id => "inner-page", :class => "one-sidebar two-sidebars"}
-        %div{:id => "header"}
-          %div{:id => "logo-title"}
-            %a{:href => "http://apps.pachube.com/", :title => "Home"}<
-              %img{:src => "/images/logo-apps.png", :alt => "pachube.apps", :id => "logo"}
-          %div{:class => "clear-block"}
-            %div{:id => "primary"}
-              %ul{:class => "links-menu"}
-                %li<
-                  %a{:href => "http://community.pachube.com/about"}< About us
-                %li<
-                  %a{:href => "http://community.pachube.com/quickstart"}< Quickstart
-                %li<
-                  %a{:href => "http://community.pachube.com/tutorials"}< Tutorials
-                %li<
-                  %a{:href => "http://community.pachube.com/quickstart"}< Forums
-          %div{:id => "container"}
-            %div{:id => "main-wrapper"}
-              %div{:id => "main"}
-                %div{:id => "output-bar-internal"}
-                  %img{:src => "/images/tit-icon-output_2.png", :alt => "Output - Use a Feed"}
-                %div{:id => "content-wrapper-output"}
-                  = yield
-              %div{:id => "p-footer"}
-                %div{:id => "p-footer_container", :class => "p-container"}
-                  %div{:class => "view-left-footer"}
-                    %a{:class => "external", :href => "http://www.connectedenvironments.com/"}<
-                      %img{:src => "/images/logo_ce.png", :alt => "Connected Environments"}
-                  %div{:class => "view-col-footer"}
-                    %a{:class => "external", :href => "http://www.pachube.com/terms_of_service"}<
-                      Terms of Service
-                    %br/
-                    %a{:class => "external", :href => "http://www.pachube.com/privacy"}<
-                      Privacy
-                    %br/
-                    %a{:class => "external", :href => "http://www.pachube.com/about"}<
-                      About us
-                    %br/
-                    %a{:class => "external", :href => "http://www.pachube.com/team"}<
-                      The team
-                    %br/
-                  %div{:class => "view-col-footer"}
-                    %a{:class => "external", :href => "http://community.pachube.com/tutorials"}<
-                      Tutorials
-                    %br/
-                    %a{:class => "external", :href => "http://community.pachube.com/api"}<
-                      API documentation
-                    %br/
-                    %a{:class => "external", :href => "http://community.pachube.com/software_hardware"}<
-                      Libraries &amp; examples
-                    %br/
-                    %a{:class => "external", :href => "http://community.pachube.com/"}<
-                      Community site
-                    %br/
-                  %div{:class => "view-col-footer"}
-                    %a{:class => "external", :href => "http://www.pachube.com/contact"}<
-                      Contact Us
-                    %br/
-                    %a{:class => "external", :href => "http://www.twitter.com/pachube"}<
-                      Follow @pachube 
-                      %img{:alt => "Twitter", :src => "/images/ico_tweeter.png"}
-                    %br/
-                    %a{:class => "external", :href => "http://www.twitter.com/pachube_dev"}<
-                      Follow @pachube_dev
-                      %img{:alt => "Twitter", :src => "/images/ico_tweeter.png"}
-                    %br/
-                    %a{:class => "external", :href => "http://www.youtube.com/Pachubevideos"}<
-                      Follow on Youtube
-                      %img{:alt => "Youtube", :src => "/images/ico_youtube.png"}
-                    %br/
+    %div{:id => "top_navigation"}
+      %ul
+        %li<
+          %a{:href => "http://www.pachube.com", :class => "external", :id => "link_pachube"} pachube.com
+        %li<
+          %a{:href => "http://community.pachube.com", :class => "external", :id => "link_community"} pachube.community
+        %li<
+          %a{:href => "http://blog.pachube.com", :class => "external", :id => "link_blog"} pachube.blog
+    %div{:id => "body_container"}
+      %div{:id => "main_content"}
+        %h1<
+          Pachube Notifo Alerts
+        %div{:id => "inner_content"}
+          = yield
+      %div{:id => "footer"}
+        %a{:class => "external", :href => "http://www.connectedenvironments.com/"}<
+          %img{:src => "/images/logo_ce.png", :alt => "Connected Environments", :id => "connected_environments_logo"}
 
+
+    /[if lt IE 9]
+      %script{:src => "http://html5shim.googlecode.com/svn/trunk/html5.js", :type => "text/javascript"}
     %script{:type => "text/javascript", :src => "http://code.jquery.com/jquery-1.5.min.js"}
     %script{:type => "text/javascript", :src => "/javascript/jquery-ui-1.8.9.custom.min.js"}
     %script{:type => "text/javascript", :src => "/javascript/jquery.cookie-min.js"}

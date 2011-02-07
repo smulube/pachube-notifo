@@ -1,17 +1,20 @@
-%h5<
-  Notifo Alerts &nbsp;
-  %img{:src => "/images/notifo_logo.png", :alt => "Notifo"}/
+%div{:id => "explanation_block"}
+  %p<
+    This application uses Pachube triggers to push data into third party
+    services, to show how easy it is to use triggers to provide deep links into
+    third party services for real time notifications of changes to your Pachube
+    feeds.
+  %p<
+    This demo application was implemented in Ruby using Sinatra, but would be
+    trivial to implement in any other language.
 %p<
   %a{:href => "http://notifo.com", :class => "external"} Notifo 
   is a cool service for sending real time notifications to your mobile phone, 
-  which we've hooked up to our existing
-  %a{:href => "http://community.pachube.com/triggers", :class => "external"} trigger (webhook)
-  functionality, which should allow you to send real time notifications of feed
-  updates to your iPhone.
-  %br
-  %span{:class => "credit"}
-    by 
-    %a{:href => "http://www.pachube.com/users/sam", :class => "external"} sam
+  which we've hooked up to the existing
+  %a{:href => "http://community.pachube.com/triggers", :class => "external"} Pachube triggers (webhook)
+  via this standalone web application, which should allow you to send real time notifications of feed
+  updates, direct to your iPhone (Android devices are also largely supported, but the
+  Notifo app for Android isn't quite as polished as the iPhone version).
 
 %p{:class => "credit"}<
   Please note, this app is currently being offered as a free beta service, so
@@ -35,7 +38,7 @@
 %div{:id => "tabs"}
   %ul
     %li<
-      %a{:href => "#tab_register"} Register
+      %a{:href => "#tab_register"} Register Device
     %li<
       %a{:href => "#tab_secrets"} Device Secret
     %li<
@@ -46,7 +49,7 @@
       %a{:href => "#tab_faq"} FAQ
 
   %div{:id => "tab_register"}
-    %h6 Register
+    %h3 Register
 
     %p<
       Before you can use this service, you will need to install the free Notifo
@@ -56,7 +59,7 @@
       , and 
       %a{:href => "http://notifo.com/mobile_apps/android", :class => "external"}<
         in beta for Android devices.
-      See more details in the 
+      For more details, please see the 
       %a{:href => "#", :class => "mobile_apps_link"}<
         Mobile Apps tab.
 
@@ -77,7 +80,7 @@
       %input{:type => "submit", :value => "Register", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-test-only"}
 
   %div{:id => "tab_secrets"}
-    %h6 Device Secret
+    %h3 Device Secret
 
     %p<
       Registering your device should have automatically sent you out a message
@@ -87,20 +90,22 @@
       at our end.
 
     %p<
-      However, if you either don't receive a secret, or have lost it, you can
-      request the generation of a new Device Secret below.
+      However, if you either don't receive a Device Secret when registering, or
+      have lost it, you can request the generation of a new one below.
 
     %p<
       <strong>You are free to create a new Device Secret at any time, but
       please be aware this will permanently invalidate the previous one, so any
-      triggers still using that value will fail</strong>.
+      triggers still using that value will fail, and the old Device Secret cannot
+      be recovered.</strong>.
 
     %p{:class => "credit"}<
-      Please note that there is a known issue with the Notifo Android app, in that it doesn't always receive the
-      non-notification type messages that Notifo is capable of sending. This means that if you have an Android device,
-      you might not receive your Device Secret automatically. If you've registed and not immediately received your Device Secret,
-      then please contact us at
-      %a{:href => "mailto://support.pachube.com"}<
+      Please note that there is a known issue with the Notifo Android app, in
+      that it doesn't always receive the non-notification type messages that
+      Notifo sends. This means that if you have an Android device, you might
+      not receive your Device Secret automatically. If you've registed and not
+      immediately received your Device Secret, then please contact us at
+      %a{:href => "mailto://support@pachube.com"}<
         support@pachube.com
       and we'll try and resolve your issues. 
     
@@ -111,7 +116,7 @@
       %input{:type => "submit", :value => "Regenerate Secret", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-test-only"}
 
   %div{:id => "tab_usage"}
-    %h6 Usage
+    %h3 Usage
 
     %p<
       To use this App, you should have already installed the <a href="#"
@@ -134,47 +139,52 @@
         For the trigger url, you need to add a url like the following:<br>
         %span{:class => "code ui-state-highlight ui-corner-all"}<
           http://apps.pachube.com/notifo/users/&lt;username&gt;/deliver?secret=&lt;device_secret&gt;
+        where &lt;username&gt; is your Notifo username, and &lt;device_secret&gt; is the string that
+        we sent out to you via Notifo.
       %li<
         Run a debug test of the trigger you have just created, and if all has worked properly, you
-        should receive a notification, direct to your device pretty quickly.
+        should receive a notification direct to your device pretty quickly.
 
   %div{:id => "tab_mobile_apps"}
-    %h6 Mobile Apps
+    %h3 Mobile Apps
 
-    %p<
-      The 
-      %a{:href => "http://notifo.com/mobile_apps/iphone", :class => "external"}<
-        Notifo app for Iphone
-      version 2, is the most developed of the mobile apps, and is currently
-      available for free download from the 
-      %a{:href => "http://itunes.apple.com/us/app/notifo/id359063459?mt=8", :class => "external"}<
-        App Store.
-    %p<
-      A 
-      %a{:href => "http://notifo.com/mobile_apps/android", :class => "external"}<
-        Notifo app for Android 
-      is currently in beta testing. It's not currently in the Android Market,
-      but the beta is available for free download direct from the Notifo site.
-      It requires a device with Android 2.2+, and you must be able to install
-      apps outside of the Android Market. In addition, setting up an Android
-      device to use our trigger notification service currently requires an
-      extra admin step at our end due to the Android client not receiving a
-      certain class of messages properly. However once this one off step has
-      been performed, you should receive notifications properly. If you want us to 
-      set this up for you then please email us at
-      %a{:href => "mailto://support@pachube.com"}<
-        support@pachube.com
-      with your Notifo username, and we'll send out your app secret.
-    %p<
-      The
-      %a{:href => "http://notifo.com/mobile_apps", :class => "external"}<
-        Notifo mobile apps page
-      lists some other devices that apps are currently under development for,
-      but none appear to be available for download at this time. Please check
-      with them for details.
+    %ul
+      %li<
+        The 
+        %a{:href => "http://notifo.com/mobile_apps/iphone", :class => "external"}<
+          Notifo app for Iphone
+        version 2, is the most developed of the mobile apps, and is currently
+        available for free download from the 
+        %a{:href => "http://itunes.apple.com/us/app/notifo/id359063459?mt=8", :class => "external"}<
+          App Store.
+      %li<
+        A 
+        %a{:href => "http://notifo.com/mobile_apps/android", :class => "external"}<
+          Notifo app for Android 
+        is currently in beta testing. It's not currently in the Android Market,
+        but the beta is available for free download direct from the Notifo site.
+        It requires a device with Android 2.2+, and you must be able to install
+        apps outside of the Android Market. In addition, setting up an Android
+        device to use our trigger notification service currently requires an
+        extra admin step at our end due to the Android client sometimes not
+        receiving a certain class of messages properly. You'll know this affects
+        you if on registration you don't receive your Device Secret. If this does
+        happen, then please contact us at
+        %a{:href => "mailto://support@pachube.com"}<
+          support@pachube.com
+        and we'll manually send out your Device Secret so you can start using the
+        service. Once this one off step has been performed, you should thereafter
+        receive notifications properly.
+      %li<
+        The
+        %a{:href => "http://notifo.com/mobile_apps", :class => "external"}<
+          Notifo mobile apps page
+        lists some other devices that apps are currently under development for,
+        but none appear to be available for download at this time. Please check
+        with them for details.
   
   %div{:id => "tab_faq"}
-    %h6 FAQ
+    %h3 FAQ
 
     %dl
       %dt Q. What usage limits are there to the service?
@@ -213,3 +223,12 @@
         there is a known issue with Android devices, where they do not seem to
         receive Notifo messages properly (note they receive the notifications
         fine), so Android devices might not receive the warning properly.
+      %dt Q. I didn't receive my Device Secret, what now?
+      %dd
+        A. If you didn't receive a Device Secret apon registration, then please
+        contact us at 
+        %a{:href => "mailto://support@pachube.com"}<
+          support@pachube.com
+        and we'll attempt to manually regenerate and send you out a new Device
+        Secret.  This problem is a known issue with some Android devices that
+        we hope will be resolved with a future Notifo app update.
