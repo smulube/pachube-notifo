@@ -11,6 +11,7 @@ require "notifo"
 require "json"
 require "lib/exceptions"
 require "sinatra/basic_auth"
+require "sinatra/logger"
 
 module Pachube
 
@@ -34,6 +35,11 @@ module Pachube
     # Create environment specific database
     set :database, "sqlite://data/pachube-notifo-#{environment}.db"
   
+    set :root, File.expand_path(File.dirname(__FILE__))
+
+    register Sinatra::Logger
+    helpers Sinatra::Logger::Helpers
+
     # Migration - I think the name of the migration is what controls whether or
     # not it's been run previously or not, so don't change this or bad things
     # might happen.
@@ -91,6 +97,10 @@ module Pachube
       # # Pass our Notifo object into the model base
       User.notifo = settings.notifo
     end
+
+    configure :development, :test do
+      set :logger_level, :debug
+    end
   
     helpers do
       def find_user
@@ -130,6 +140,7 @@ module Pachube
     # ------------------------------------------------------------------------------- 
     
     get "/" do
+      logger.info("Testing logger")
       haml :index
     end
 
