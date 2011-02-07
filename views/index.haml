@@ -74,9 +74,9 @@
       up your triggers on Pachube.
 
     %form{:method => "post", :action => "/users/register"}
-      %label{:for => "username", :class => "label"} Notifo username
+      %label{:for => "register_username", :class => "label"} Notifo username
       %br/
-      %input{:name => "username", :type => "text"}
+      %input{:name => "username", :type => "text", :id => "register_username"}
       %input{:type => "submit", :value => "Register", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-test-only"}
 
   %div{:id => "tab_secrets"}
@@ -110,9 +110,9 @@
       and we'll try and resolve your issues. 
     
     %form{:method => "post", :action => "/users/secret"}
-      %label{:for => "username", :class => "label"} Notifo username
+      %label{:for => "secret_username", :class => "label"} Notifo username
       %br/
-      %input{:name => "username", :type => "text"}
+      %input{:name => "username", :type => "text", :id => "secret_username"}
       %input{:type => "submit", :value => "Regenerate Secret", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-test-only"}
 
   %div{:id => "tab_usage"}
