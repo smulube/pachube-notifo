@@ -355,6 +355,12 @@ color: #fff;
 margin: 10px;
 }
 
+.notice {
+margin-bottom: 1em;
+padding: 1em 1em 0;
+font-weight: bold;
+}
+
 /*  13-column layout
   60 px columns, 24 px gutters, 72 px margins, 1212 px total (extra space for scrollbars)
   ---------------------------------------------------------------------------------------
