@@ -15,8 +15,9 @@ gem "sinatra-logger", "0.1.1"
 gem "sinatra-basic-auth", "0.1.0"
 
 group :test do
-  gem "rspec", "2.4.0"
+  gem "rspec", "2.5.0"
   gem "rack-test", "0.5.6"
+  gem "fuubar", "0.0.3"
 end
 
 group :deploy do
