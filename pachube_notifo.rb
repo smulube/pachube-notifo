@@ -91,10 +91,6 @@ module Pachube
       # Set our user_monthly_usage_limit
       set :user_monthly_usage_limit => config_file["user_monthly_usage_limit"]
   
-      # Setting to control whether or not to actual try and deliver outgoing
-      # messages/notifications
-      set :enable => config_file["notifo"]["enable"]
-  
       # require our model classes here, which runs after the database object has
       # been initialized
       require "models/user"

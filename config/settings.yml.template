@@ -2,3 +2,7 @@
 notifo:
   username: service_username
   secret: service_secret
+auth_username: admin
+auth_password: password
+monthly_usage_limit: 10000
+user_monthly_usage_limit: 200
