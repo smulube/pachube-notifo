@@ -100,11 +100,7 @@
       be recovered.</strong>.
 
     %p{:class => "credit"}<
-      Please note that there is a known issue with the Notifo Android app, in
-      that it doesn't always receive the non-notification type messages that
-      Notifo sends. This means that if you have an Android device, you might
-      not receive your Device Secret automatically. If you've registed and not
-      immediately received your Device Secret, then please contact us at
+      If you never receive your Device Secret then please contact us at
       %a{:href => "mailto://support@pachube.com"}<
         support@pachube.com
       and we'll try and resolve your issues. 
@@ -138,7 +134,7 @@
       %li<
         For the trigger url, you need to add a url like the following:<br>
         %span{:class => "code ui-state-highlight ui-corner-all"}<
-          http://apps.pachube.com/notifo/users/&lt;username&gt;/deliver?secret=&lt;device_secret&gt;
+          http://notifo.pachube.com/users/&lt;username&gt;/deliver?secret=&lt;device_secret&gt;
         where &lt;username&gt; is your Notifo username, and &lt;device_secret&gt; is the string that
         we sent out to you via Notifo.
       %li<
@@ -164,17 +160,7 @@
         is currently in beta testing. It's not currently in the Android Market,
         but the beta is available for free download direct from the Notifo site.
         It requires a device with Android 2.2+, and you must be able to install
-        apps outside of the Android Market. In addition, setting up an Android
-        device to use our trigger notification service currently requires an
-        extra admin step at our end due to the Android client sometimes not
-        receiving a certain class of messages properly. You'll know this affects
-        you if on registration you don't receive your Device Secret. If this does
-        happen, then please contact us at
-        %a{:href => "mailto://support@pachube.com"}<
-          support@pachube.com
-        and we'll manually send out your Device Secret so you can start using the
-        service. Once this one off step has been performed, you should thereafter
-        receive notifications properly.
+        apps outside of the Android Market. 
       %li<
         The
         %a{:href => "http://notifo.com/mobile_apps", :class => "external"}<
@@ -230,5 +216,4 @@
         %a{:href => "mailto://support@pachube.com"}<
           support@pachube.com
         and we'll attempt to manually regenerate and send you out a new Device
-        Secret.  This problem is a known issue with some Android devices that
-        we hope will be resolved with a future Notifo app update.
+        Secret. 

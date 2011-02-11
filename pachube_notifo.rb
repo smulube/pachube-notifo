@@ -71,7 +71,7 @@ module Pachube
 
       # config options that should be set for all environments
       set :sessions, true
-      set :logging, false
+      set :logging, true
       set :haml, :format => :html5
       set :public, File.dirname(__FILE__) + "/public"
     
@@ -163,7 +163,7 @@ module Pachube
     # ------------------------------------------------------------------------------- 
     # Basic authorization stuff
     # ------------------------------------------------------------------------------- 
-    authorize do |username, password|
+    authorize "Admin" do |username, password|
       username == settings.auth_username && password == settings.auth_password
     end
 
@@ -206,26 +206,35 @@ module Pachube
     # Start of admin type actions that should be protected
     # ------------------------------------------------------------------------------- 
     
-    protect do
+    protect "Admin" do
       get "/admin" do
-        haml :"admin/index"
+        "hello, #{auth.credentials.inspect}"
+        #haml :"admin/index"
       end
     end
 
-    get "/admin/users/:username" do
-      @user = User[:username => params[:username]]
-      haml :"users/show"
+    protect "Admin" do
+      get "/admin/users/:username" do
+        @user = User[:username => params[:username]]
+        raise Sinatra::NotFound if @user.nil?
+        #haml :"users/show"
+        "This is: #{@user.inspect}"
+      end
     end
   
-    get "/admin/users" do
-      @order = (params[:order] || :username).to_sym
-      @users = User.order(@order).all
-      haml :"admin/users"
+    protect "Admin" do
+      get "/admin/users" do
+        @order = (params[:order] || :username).to_sym
+        @users = User.order(@order).all
+        haml :"admin/users"
+      end
     end
 
-    get "/admin/statistics" do
-      @statistics = database[:statistics][:id => 1]
-      haml :"/admin/statistics"
+    protect "Admin" do
+      get "/admin/statistics" do
+        @statistics = database[:statistics][:id => 1]
+        haml :"/admin/statistics"
+      end
     end
   
   end

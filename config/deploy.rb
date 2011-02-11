@@ -1,13 +1,22 @@
-set :application, "set your application name here"
-set :repository,  "set your repository location here"
+require "bundler/capistrano"
 
-set :scm, :subversion
-# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+# Set some globals
+default_run_options[:pty] = true
 
-role :web, "your web-server here"                          # Your HTTP server, Apache/etc
-role :app, "your app-server here"                          # This may be the same as your `Web` server
-role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
-role :db,  "your slave db-server here"
+set :application, "pachube_notifo"
+set :repository, "git@mulube.unfuddle.com:mulube/pachube_notifo.git"
+set :scm, "git"
+set :branch, "develop"
+set :deploy_via, :export
+set :deploy_to, "/u/apps/pachube_notifo"
+
+role :app, "notifo.pachube.com"                          # This may be the same as your `Web` server
+
+# Deployment
+set :user, "deploy"
+
+# No sudo
+set :use_sudo, false
 
 # If you are using Passenger mod_rails uncomment this:
 # if you're still using the script/reapear helper you will need
