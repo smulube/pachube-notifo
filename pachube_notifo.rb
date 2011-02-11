@@ -21,8 +21,6 @@ module Pachube
   NOTIFO_NO_SUCH_USER = 1105
   NOTIFO_SUBSCRIBE_FORBIDDEN = 1106
 
-  NOTIFO_OK_MESSAGE = { "status" => "success", "response_code" => 2201, "response_message" => "OK" }
-
   class NotifoApp < Sinatra::Base
     register Sinatra::SequelExtension
     register Sinatra::BasicAuth
@@ -51,6 +49,7 @@ module Pachube
         column :username, :string
         column :crypted_secret, :string
         column :message_count, :integer, :default => 0, :null => false
+        column :monthly_message_count, :integer, :default => 0, :null => false
         column :created_at, :timestamp
         column :updated_at, :timestamp
       
@@ -79,12 +78,18 @@ module Pachube
       # Load the automatic timestamps Sequel plugin (for auto setting updated_at,
       # created_at)
       Sequel::Model.plugin :timestamps
+
+      # Load the pagination extension
+      Sequel.extension :pagination
   
       # Create our Notifio client object and stuff into a settings variable
       set :notifo => Notifo.new(config_file["notifo"]["username"], config_file["notifo"]["secret"])
 
       # Set our monthly_usage_limit
-      set :monthly_usage_limit => config_file["notifo"]["monthly_usage_limit"]
+      set :monthly_usage_limit => config_file["monthly_usage_limit"]
+
+      # Set our user_monthly_usage_limit
+      set :user_monthly_usage_limit => config_file["user_monthly_usage_limit"]
   
       # Setting to control whether or not to actual try and deliver outgoing
       # messages/notifications
@@ -96,6 +101,10 @@ module Pachube
   
       # # Pass our Notifo object into the model base
       User.notifo = settings.notifo
+
+      # Set our basic auth username and password
+      set :auth_username, config_file["auth_username"]
+      set :auth_password, config_file["auth_password"]
     end
 
     configure :development, :test do
@@ -103,9 +112,14 @@ module Pachube
     end
   
     helpers do
-      def find_user
-        @user = User.authenticate(params[:username], params[:secret])
+
+      def authenticate_user_by_secret
+        @user = User.authenticate_by_secret(params[:username], params[:secret])
         raise Sinatra::NotFound if @user.nil?
+      end
+
+      def find_user
+        @user = User[:username => params[:username]]
       end
   
       def check_total_monthly_usage
@@ -115,8 +129,25 @@ module Pachube
         end
   
         # prevent delivery if we have reached our monthly quota
-        raise ServiceUnavailable if database[:statistics][:id => 1][:monthly_count] > settings.monthly_usage_limit
+        raise ServiceUnavailable if database[:statistics][:id => 1][:monthly_count] >= settings.monthly_usage_limit
       end
+
+      def check_user_monthly_usage
+        raise(Forbidden, "Monthly usage over quota") if @user.monthly_message_count >= settings.user_monthly_usage_limit
+      end
+    end
+    
+    # ------------------------------------------------------------------------------- 
+    # Error handlers
+    # ------------------------------------------------------------------------------- 
+    
+    error Forbidden do
+      status 403
+      "Access forbidden: #{request.env["sinatra.error"].message}"
+    end
+
+    error ServiceUnavailable do
+      "Service unavailable: #{request.env["sinatra.error"].message}"
     end
 
     # ------------------------------------------------------------------------------- 
@@ -124,15 +155,20 @@ module Pachube
     # ------------------------------------------------------------------------------- 
   
     before '/users/:username/deliver' do
-      find_user
+      authenticate_user_by_secret
       check_total_monthly_usage
+      check_user_monthly_usage
+    end
+
+    before '/users/secret' do
+      find_user
     end
   
     # ------------------------------------------------------------------------------- 
     # Basic authorization stuff
     # ------------------------------------------------------------------------------- 
     authorize do |username, password|
-      username == "john" && password == "doe"
+      username == settings.auth_username && password == settings.auth_password
     end
 
     # ------------------------------------------------------------------------------- 
@@ -140,7 +176,6 @@ module Pachube
     # ------------------------------------------------------------------------------- 
     
     get "/" do
-      logger.info("Testing logger")
       haml :index
     end
 
@@ -151,7 +186,9 @@ module Pachube
     end
 
     post "/users/secret" do
-
+      @user.regenerate_secret
+      flash[:notice] = "Device secret generated and sent out successfully."
+      redirect "/"
     end
 
     post "/users/:username/deliver" do
@@ -160,13 +197,15 @@ module Pachube
       case response["response_code"]
       when Pachube::NOTIFO_OK
         halt 200
-      when Pachube::NOTIFO_FORBIDDEN, Pachube::NOTIFO_NO_SUCH_USER
-        raise NotFound
+      when Pachube::NOTIFO_FORBIDDEN
+        error 403, "Forbidden from sending to that user by Notifo"
+      when Pachube::NOTIFO_NO_SUCH_USER
+        error 404, "Unable to locate Notifo user"
       else
-        raise Sinatra::ServerError
+        error 500, "Service unavailable"
       end
     end
-  
+
     # ------------------------------------------------------------------------------- 
     # Start of admin type actions that should be protected
     # ------------------------------------------------------------------------------- 
@@ -183,12 +222,14 @@ module Pachube
     end
   
     get "/admin/users" do
-      @users = User.all
-      haml :"users/index"
+      @order = (params[:order] || :username).to_sym
+      @users = User.order(@order).all
+      haml :"admin/users"
     end
 
     get "/admin/statistics" do
-
+      @statistics = database[:statistics][:id => 1]
+      haml :"/admin/statistics"
     end
   
   end
