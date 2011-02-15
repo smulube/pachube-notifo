@@ -44,8 +44,8 @@ module Pachube
     migration "Create the users table" do
       database.create_table :users do
         primary_key :id
-        column :username, :string
-        column :crypted_secret, :string
+        column :username, String
+        column :crypted_secret, String
         column :message_count, :integer, :default => 0, :null => false
         column :monthly_message_count, :integer, :default => 0, :null => false
         column :created_at, :timestamp
