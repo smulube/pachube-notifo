@@ -12,7 +12,6 @@ gem "json", "1.5.1"
 gem "activesupport", "3.0.3"
 gem "bcrypt-ruby", "2.1.4"
 gem "sinatra-logger", "0.1.1"
-gem "sinatra-basic-auth", "0.1.0"
 
 group :test do
   gem "rspec", "2.5.0"

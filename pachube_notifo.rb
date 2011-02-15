@@ -10,7 +10,6 @@ require "yaml"
 require "notifo"
 require "json"
 require "lib/exceptions"
-require "sinatra/basic_auth"
 require "sinatra/logger"
 
 module Pachube
@@ -23,7 +22,6 @@ module Pachube
 
   class NotifoApp < Sinatra::Base
     register Sinatra::SequelExtension
-    register Sinatra::BasicAuth
   
     helpers Sinatra::SequelHelper
   
@@ -110,6 +108,7 @@ module Pachube
     helpers do
 
       def authenticate_user_by_secret
+        logger.debug("Attempting to authenticate user: #{params[:username]}")
         @user = User.authenticate_by_secret(params[:username], params[:secret])
         raise Sinatra::NotFound if @user.nil?
       end
@@ -119,6 +118,7 @@ module Pachube
       end
   
       def check_total_monthly_usage
+        logger.debug("Checking total monthly usage")
         # create our counter row if it doesn't yet exist
         if database[:statistics][:id => 1].nil?
           database[:statistics].insert(:monthly_count => 0, :total_count => 0)
@@ -129,7 +129,20 @@ module Pachube
       end
 
       def check_user_monthly_usage
+        logger.debug("Checking users monthly usage")
         raise(Forbidden, "Monthly usage over quota") if @user.monthly_message_count >= settings.user_monthly_usage_limit
+      end
+
+      def protected!
+        unless authorized?
+          response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+          throw(:halt, [401, "Not authorized\n"])
+        end
+      end
+
+      def authorized?
+        @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [settings.auth_username, settings.auth_password]
       end
     end
     
@@ -159,13 +172,6 @@ module Pachube
     before '/users/secret' do
       find_user
     end
-  
-    # ------------------------------------------------------------------------------- 
-    # Basic authorization stuff
-    # ------------------------------------------------------------------------------- 
-    authorize "Admin" do |username, password|
-      username == settings.auth_username && password == settings.auth_password
-    end
 
     # ------------------------------------------------------------------------------- 
     # Start of our actions
@@ -189,7 +195,7 @@ module Pachube
 
     post "/users/:username/deliver" do
       trigger_content = JSON.parse(params[:body])
-      response = @user.send_notification("'#{trigger_content["type"]}' event triggerd by feed #{trigger_content["environment"]["id"]}, datastream #{trigger_content["triggering_datastream"]["id"]} with a value of #{trigger_content["triggering_datastream"]["value"]} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://www.pachube.com/feeds/#{trigger_content["environment"]["id"]}")
+      response = @user.send_notification("'#{trigger_content["type"]}' event; feed #{trigger_content["environment"]["id"]}, datastream #{trigger_content["triggering_datastream"]["id"]}, value: #{trigger_content["triggering_datastream"]["value"].inspect} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://www.pachube.com/feeds/#{trigger_content["environment"]["id"]}")
       case response["response_code"]
       when Pachube::NOTIFO_OK
         halt 200
@@ -206,36 +212,35 @@ module Pachube
     # Start of admin type actions that should be protected
     # ------------------------------------------------------------------------------- 
     
-    protect "Admin" do
-      get "/admin" do
-        "hello, #{auth.credentials.inspect}"
-        #haml :"admin/index"
-      end
+    get "/admin" do
+      protected!
+      "hello, #{auth.credentials.inspect}"
+      #haml :"admin/index"
     end
 
-    protect "Admin" do
-      get "/admin/users/:username" do
-        @user = User[:username => params[:username]]
-        raise Sinatra::NotFound if @user.nil?
-        #haml :"users/show"
-        "This is: #{@user.inspect}"
-      end
+    get "/admin/users/:username" do
+      protected!
+      @user = User[:username => params[:username]]
+      raise Sinatra::NotFound if @user.nil?
+      #haml :"users/show"
+      "This is: #{@user.inspect}"
     end
   
-    protect "Admin" do
-      get "/admin/users" do
-        @order = (params[:order] || :username).to_sym
-        @users = User.order(@order).all
-        haml :"admin/users"
-      end
+    get "/admin/users" do
+      protected!
+      @order = (params[:order] || :username).to_sym
+      @users = User.order(@order).all
+      haml :"admin/users"
     end
 
-    protect "Admin" do
-      get "/admin/statistics" do
-        @statistics = database[:statistics][:id => 1]
-        haml :"/admin/statistics"
-      end
+    get "/admin/statistics" do
+      protected!
+
+      statistics = database[:statistics][:id => 1]
+      user_count = User.count
+
+      content_type "text/plain", :charset => "utf-8"
+      "Statistics\n# Total messages,Monthly messages,Total users\n#{statistics[:total_count]},#{statistics[:monthly_count]},#{user_count}"
     end
-  
   end
 end
