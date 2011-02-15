@@ -29,7 +29,7 @@ module Pachube
     use Rack::Flash, :sweep => true
   
     # Create environment specific database
-    set :database, "sqlite://data/pachube-notifo-#{environment}.db"
+    set :database, ENV["DATABASE_URL"] || "sqlite://data/pachube-notifo-#{environment}.db"
   
     set :root, File.expand_path(File.dirname(__FILE__))
 
