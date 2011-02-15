@@ -99,6 +99,8 @@ module Pachube
       # Set our basic auth username and password
       set :auth_username, config_file["auth_username"]
       set :auth_password, config_file["auth_password"]
+
+      set :logger_log_file, lambda { $stdout }
     end
 
     configure :development, :test do
