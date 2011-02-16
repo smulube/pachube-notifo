@@ -82,10 +82,10 @@ module Pachube
       set :notifo => Notifo.new(ENV["NOTIFO_USERNAME"], ENV["NOTIFO_SECRET"])
 
       # Set our monthly_usage_limit
-      set :monthly_usage_limit => ENV["MONTHLY_USAGE_LIMIT"] || 10000
+      set :monthly_usage_limit => ENV["MONTHLY_USAGE_LIMIT"].to_i || 10000
 
       # Set our user_monthly_usage_limit
-      set :user_monthly_usage_limit => ENV["USER_MONTHLY_USAGE_LIMIT"] || 100
+      set :user_monthly_usage_limit => ENV["USER_MONTHLY_USAGE_LIMIT"].to_i || 100
   
       # Set the domain outgoing notifications will point back to 
       set :domain => ENV["DOMAIN"] || "www.pachube.com"
@@ -238,7 +238,8 @@ module Pachube
     get "/admin/statistics" do
       protected!
 
-      statistics = database[:statistics][:id => 1]
+      statistics = database[:statistics][:id => 1] || {:total_count => 0, :monthly_count => 0}
+
       user_count = User.count
 
       content_type "text/plain", :charset => "utf-8"
