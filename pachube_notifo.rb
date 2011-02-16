@@ -64,8 +64,6 @@ module Pachube
     end
   
     configure do
-      # load config file
-      config_file = YAML.load_file(File.join(File.dirname(__FILE__), "config/settings.yml"))
 
       # config options that should be set for all environments
       set :sessions, true
@@ -81,16 +79,16 @@ module Pachube
       Sequel.extension :pagination
   
       # Create our Notifio client object and stuff into a settings variable
-      set :notifo => Notifo.new(ENV["NOTIFO_USERNAME"] || config_file["notifo"]["username"], ENV["NOTIFO_SECRET"] || config_file["notifo"]["secret"])
+      set :notifo => Notifo.new(ENV["NOTIFO_USERNAME"], ENV["NOTIFO_SECRET"])
 
       # Set our monthly_usage_limit
-      set :monthly_usage_limit => ENV["MONTHLY_USAGE_LIMIT"] || config_file["monthly_usage_limit"]
+      set :monthly_usage_limit => ENV["MONTHLY_USAGE_LIMIT"] || 10000
 
       # Set our user_monthly_usage_limit
-      set :user_monthly_usage_limit => ENV["USER_MONTHLY_USAGE_LIMIT"] || config_file["user_monthly_usage_limit"]
+      set :user_monthly_usage_limit => ENV["USER_MONTHLY_USAGE_LIMIT"] || 100
   
       # Set the domain outgoing notifications will point back to 
-      set :domain => ENV["DOMAIN"] || config_file["domain"]
+      set :domain => ENV["DOMAIN"] || "www.pachube.com"
 
       # require our model classes here, which runs after the database object has
       # been initialized
@@ -100,8 +98,10 @@ module Pachube
       User.notifo = settings.notifo
 
       # Set our basic auth username and password
-      set :auth_username, ENV["AUTH_USERNAME"] || config_file["auth_username"]
-      set :auth_password, ENV["AUTH_PASSWORD"] || config_file["auth_password"]
+      set :auth_username, ENV["AUTH_USERNAME"]
+      set :auth_password, ENV["AUTH_PASSWORD"]
+
+      raise "Must set AUTH_USERNAME and AUTH_PASSWORD environment variables before launching" if settings.auth_username.nil? && settings.auth_password.nil?
 
       set :logger_log_file, lambda { $stdout }
     end
