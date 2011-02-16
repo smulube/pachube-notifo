@@ -238,7 +238,8 @@ module Pachube
     get "/admin/statistics" do
       protected!
 
-      statistics = database[:statistics][:id => 1]
+      statistics = database[:statistics][:id => 1] || {:total_count => 0, :monthly_count => 0}
+
       user_count = User.count
 
       content_type "text/plain", :charset => "utf-8"
