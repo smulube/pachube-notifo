@@ -81,14 +81,17 @@ module Pachube
       Sequel.extension :pagination
   
       # Create our Notifio client object and stuff into a settings variable
-      set :notifo => Notifo.new(config_file["notifo"]["username"], config_file["notifo"]["secret"])
+      set :notifo => Notifo.new(ENV["NOTIFO_USERNAME"] || config_file["notifo"]["username"], ENV["NOTIFO_SECRET"] || config_file["notifo"]["secret"])
 
       # Set our monthly_usage_limit
-      set :monthly_usage_limit => config_file["monthly_usage_limit"]
+      set :monthly_usage_limit => ENV["MONTHLY_USAGE_LIMIT"] || config_file["monthly_usage_limit"]
 
       # Set our user_monthly_usage_limit
-      set :user_monthly_usage_limit => config_file["user_monthly_usage_limit"]
+      set :user_monthly_usage_limit => ENV["USER_MONTHLY_USAGE_LIMIT"] || config_file["user_monthly_usage_limit"]
   
+      # Set the domain outgoing notifications will point back to 
+      set :domain => ENV["DOMAIN"] || config_file["domain"]
+
       # require our model classes here, which runs after the database object has
       # been initialized
       require "models/user"
@@ -97,8 +100,8 @@ module Pachube
       User.notifo = settings.notifo
 
       # Set our basic auth username and password
-      set :auth_username, config_file["auth_username"]
-      set :auth_password, config_file["auth_password"]
+      set :auth_username, ENV["AUTH_USERNAME"] || config_file["auth_username"]
+      set :auth_password, ENV["AUTH_PASSWORD"] || config_file["auth_password"]
 
       set :logger_log_file, lambda { $stdout }
     end
@@ -110,7 +113,6 @@ module Pachube
     helpers do
 
       def authenticate_user_by_secret
-        logger.debug("Attempting to authenticate user: #{params[:username]}")
         @user = User.authenticate_by_secret(params[:username], params[:secret])
         raise Sinatra::NotFound if @user.nil?
       end
@@ -120,7 +122,6 @@ module Pachube
       end
   
       def check_total_monthly_usage
-        logger.debug("Checking total monthly usage")
         # create our counter row if it doesn't yet exist
         if database[:statistics][:id => 1].nil?
           database[:statistics].insert(:monthly_count => 0, :total_count => 0)
@@ -131,7 +132,6 @@ module Pachube
       end
 
       def check_user_monthly_usage
-        logger.debug("Checking users monthly usage")
         raise(Forbidden, "Monthly usage over quota") if @user.monthly_message_count >= settings.user_monthly_usage_limit
       end
 
@@ -197,7 +197,7 @@ module Pachube
 
     post "/users/:username/deliver" do
       trigger_content = JSON.parse(params[:body])
-      response = @user.send_notification("'#{trigger_content["type"]}' event; feed #{trigger_content["environment"]["id"]}, datastream #{trigger_content["triggering_datastream"]["id"]}, value: #{trigger_content["triggering_datastream"]["value"].inspect} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://www.pachube.com/feeds/#{trigger_content["environment"]["id"]}")
+      response = @user.send_notification("'#{trigger_content["type"]}' event; feed #{trigger_content["environment"]["id"]}, datastream #{trigger_content["triggering_datastream"]["id"]}, value: #{trigger_content["triggering_datastream"]["value"].inspect} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://#{settings.domain}/feeds/#{trigger_content["environment"]["id"]}")
       case response["response_code"]
       when Pachube::NOTIFO_OK
         halt 200
