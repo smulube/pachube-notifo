@@ -82,10 +82,10 @@ module Pachube
       set :notifo => Notifo.new(ENV["NOTIFO_USERNAME"], ENV["NOTIFO_SECRET"])
 
       # Set our monthly_usage_limit
-      set :monthly_usage_limit => ENV["MONTHLY_USAGE_LIMIT"].to_i || 10000
+      set :monthly_usage_limit => (ENV["MONTHLY_USAGE_LIMIT"] || 10000).to_i
 
       # Set our user_monthly_usage_limit
-      set :user_monthly_usage_limit => ENV["USER_MONTHLY_USAGE_LIMIT"].to_i || 100
+      set :user_monthly_usage_limit => (ENV["USER_MONTHLY_USAGE_LIMIT"] || 100).to_i
   
       # Set the domain outgoing notifications will point back to 
       set :domain => ENV["DOMAIN"] || "www.pachube.com"
@@ -103,11 +103,16 @@ module Pachube
 
       raise "Must set AUTH_USERNAME and AUTH_PASSWORD environment variables before launching" if settings.auth_username.nil? && settings.auth_password.nil?
 
-      set :logger_log_file, lambda { $stdout }
     end
 
     configure :development, :test do
       set :logger_level, :debug
+    end
+
+    configure :production do
+      # heroku captures all stdout/stderr input as app logs, so in production
+      # log to stdout
+      set :logger_log_file, lambda { $stdout }
     end
   
     helpers do
@@ -122,16 +127,21 @@ module Pachube
       end
   
       def check_total_monthly_usage
+        logger.debug("Checking total monthly usage")
         # create our counter row if it doesn't yet exist
         if database[:statistics][:id => 1].nil?
           database[:statistics].insert(:monthly_count => 0, :total_count => 0)
         end
+
+        logger.debug("Statistics: #{database[:statistics][:id => 1].inspect}")
+        logger.debug("Monthly usage limit: #{settings.monthly_usage_limit}")
   
         # prevent delivery if we have reached our monthly quota
         raise ServiceUnavailable if database[:statistics][:id => 1][:monthly_count] >= settings.monthly_usage_limit
       end
 
       def check_user_monthly_usage
+        logger.debug("Checking users monthly usage")
         raise(Forbidden, "Monthly usage over quota") if @user.monthly_message_count >= settings.user_monthly_usage_limit
       end
 
@@ -197,7 +207,8 @@ module Pachube
 
     post "/users/:username/deliver" do
       trigger_content = JSON.parse(params[:body])
-      response = @user.send_notification("'#{trigger_content["type"]}' event; feed #{trigger_content["environment"]["id"]}, datastream #{trigger_content["triggering_datastream"]["id"]}, value: #{trigger_content["triggering_datastream"]["value"].inspect} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://#{settings.domain}/feeds/#{trigger_content["environment"]["id"]}")
+      response = @user.send_trigger_notification(trigger_content, settings.domain)
+      logger.debug("Response: #{response.inspect}")
       case response["response_code"]
       when Pachube::NOTIFO_OK
         halt 200
