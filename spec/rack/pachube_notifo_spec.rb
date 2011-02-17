@@ -1,12 +1,7 @@
-require File.dirname(__FILE__) + "/../spec_helper"
+require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 describe Pachube::NotifoApp do
   include Rack::Test::Methods
-
-  NOTIFO_OK_MESSAGE = %q{{"status": "success", "response_code": 2201, "response_message": "OK" }}
-  NOTIFO_FORBIDDEN_MESSAGE = %q{{"status": "error", "response_code": 1102, "response_message": "Not allowed to send to user"}}
-  NOTIFO_NO_SUCH_USER_MESSAGE = %q{{"status": "error", "response_code": 1105, "response_message": "No such user"}}
-  NOTIFO_SUBSCRIBE_FORBIDDEN_MESSAGE = %q{{"status": "error", "response_code": 1106, "response_message": "Not allowed to subscribe user"}}
 
   def app
     Pachube::NotifoApp.new
@@ -166,7 +161,7 @@ describe Pachube::NotifoApp do
 
     context "when remote request is successful" do
       before(:each) do
-        User.notifo.stub!(:send_notification).and_return(::NOTIFO_OK_MESSAGE)
+        User.notifo.stub!(:send_notification).and_return(NOTIFO_OK_MESSAGE)
         @user = User.create(:username => "bob", :secret => "secret")
       end
 
@@ -206,7 +201,7 @@ describe Pachube::NotifoApp do
     
     context "when remote request returns no such user message" do
       before(:each) do
-        User.notifo.stub!(:send_notification).and_return(::NOTIFO_NO_SUCH_USER_MESSAGE)
+        User.notifo.stub!(:send_notification).and_return(NOTIFO_NO_SUCH_USER_MESSAGE)
         @user = User.create(:username => "bob", :secret => "secret")
       end
 
