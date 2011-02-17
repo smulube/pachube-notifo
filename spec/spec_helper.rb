@@ -9,6 +9,7 @@ NOTIFO_SUBSCRIBE_FORBIDDEN_MESSAGE = %q{{"status": "error", "response_code": 110
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'pachube_notifo'))
 
+require 'rspec'
 require 'rack/test'
 
 RSpec.configure do |c|
