@@ -205,9 +205,8 @@ module Pachube
 
     post "/users/:username/deliver" do
       trigger_content = JSON.parse(params[:body])
-      logger.debug("Parsed trigger content: #{trigger_content.inspect}")
-      response = @user.send_notification("'#{trigger_content["type"]}' event; feed #{trigger_content["environment"]["id"]}, datastream #{trigger_content["triggering_datastream"]["id"]}, value: #{trigger_content["triggering_datastream"]["value"].inspect} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://#{settings.domain}/feeds/#{trigger_content["environment"]["id"]}")
-      logger.debug("Got response: #{response.inspect}")
+      response = @user.send_trigger_notification(trigger_content, settings.domain)
+      puts "Response: #{response.inspect}"
       case response["response_code"]
       when Pachube::NOTIFO_OK
         halt 200

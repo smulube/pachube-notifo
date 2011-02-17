@@ -1,3 +1,4 @@
+# Set up some env variables and constants we want to use
 ENV["RACK_ENV"] = "test"
 ENV["AUTH_USERNAME"] = "admin"
 ENV["AUTH_PASSWORD"] = "passwd"

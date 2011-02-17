@@ -42,13 +42,38 @@ class User < Sequel::Model
     ActiveSupport::SecureRandom.hex(3)
   end
 
+  def self.operator(type, threshold_value)
+    case type
+    when "lt"
+      return "< #{threshold_value.to_s}"
+    when "lte"
+      return "<= #{threshold_value.to_s}"
+    when "gt"
+      return "> #{threshold_value.to_s}"
+    when "gte"
+      return ">= #{threshold_value.to_s}"
+    when "eq"
+      return "== #{threshold_value.to_s}"
+    when "change"
+      return "is a change"
+    else
+      raise "Unexpected trigger type"
+    end
+  end
+
+  # Before save callback to encrypt the users secret if present
   def before_save
     encrypt_secret
     super
   end
 
-  # Send a notification message to this user. Will only work if the user is
-  # subscribed to the service.
+  # Higher level method for sending notifications that creates the actual message string we want to deliver
+  def send_trigger_notification(trigger_content, domain)
+    send_notification("Event: #{trigger_content["triggering_datastream"]["value"]["value"]} #{User.operator(trigger_content["type"], trigger_content["threshold_value"])}. Feed - '#{trigger_content["environment"]["title"]}', datastream #{trigger_content["triggering_datastream"]["id"]}, value: #{trigger_content["triggering_datastream"]["value"].inspect} at #{trigger_content["timestamp"]}", "Pachube Trigger Notification", "http://#{domain}/feeds/#{trigger_content["environment"]["id"]}")
+  end
+
+  # Low level method to send a notification message to this user. Will only
+  # work if the user is subscribed to the service.
   def send_notification(message, title =  nil, url = nil, label = nil)
     response = JSON.parse(User.notifo.send_notification(self.username, message, title, url, label))
     if response["response_code"] == Pachube::NOTIFO_OK
