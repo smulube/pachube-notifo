@@ -110,6 +110,8 @@ module Pachube
     end
 
     configure :production do
+      # heroku captures all stdout/stderr input as app logs, so in production
+      # log to stdout
       set :logger_log_file, lambda { $stdout }
     end
   
@@ -206,7 +208,7 @@ module Pachube
     post "/users/:username/deliver" do
       trigger_content = JSON.parse(params[:body])
       response = @user.send_trigger_notification(trigger_content, settings.domain)
-      puts "Response: #{response.inspect}"
+      logger.debug("Response: #{response.inspect}")
       case response["response_code"]
       when Pachube::NOTIFO_OK
         halt 200
