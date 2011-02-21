@@ -107,7 +107,6 @@ figure img {width: 100%;}
   font-style: italic;
 }
 
-
 @font-face {
   font-family: 'PT Sans';
   src: url('/fonts/PT-Sans/PTS55F-webfont.eot');
@@ -124,7 +123,6 @@ figure img {width: 100%;}
   font-style: normal;
 }
 
-
 @font-face {
   font-family: 'Nobile';
   src: url('/fonts/Nobile/nobile_bold_italic-webfont.eot');
@@ -140,7 +138,6 @@ figure img {width: 100%;}
   font-weight: 400;
   font-style: italic;
 }
-
 
 @font-face {
   font-family: 'Nobile';
@@ -180,6 +177,11 @@ figure img {width: 100%;}
   src: local('☺'), url('/fonts/ubuntu/Ubuntu-R-webfont.woff') format('woff'), url('/fonts/ubuntu/Ubuntu-R-webfont.ttf') format('truetype'), url('/fonts/ubuntu/Ubuntu-R-webfont.svg#webfontX4pGz9fc') format('svg');
   font-weight: 400;
   font-style: normal;
+}
+
+dt {
+  font-weight: bold;
+  font-style: italic;
 }
 
 /*  Default 8-column layout

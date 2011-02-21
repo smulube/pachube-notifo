@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 describe User do
   before(:all) do
     @json = JSON.parse(IO.read("spec/trigger.json"))
+    @debug_json = JSON.parse(IO.read("spec/debug_trigger.json"))
   end
 
   before(:each) do
@@ -49,5 +50,11 @@ describe User do
     user = User.create(:username => "bob", :secret => "passwd")
     user.should_receive(:send_notification).with("Event: 4.7 > 3. Feed - 'space weather', datastream 2, value: {\"max_value\"=>23.2, \"min_value\"=>0.1, \"value\"=>\"4.7\"} at 2011-01-28T15:53:38Z", "Pachube Trigger Notification", "http://www.pachube.com/feeds/256")
     user.send_trigger_notification(@json, "www.pachube.com")
+  end
+
+  it "should send a different composed message if the current notification is a debug test" do
+    user = User.create(:username => "bob", :secret => "passwd")
+    user.should_receive(:send_notification).with("[DEBUG] Event: 4.7 > 3. Feed - 'space weather', datastream 2, value: {\"max_value\"=>23.2, \"min_value\"=>0.1, \"value\"=>\"4.7\"} at 2011-01-28T15:53:38Z", "Pachube Trigger Notification", "http://www.pachube.com/feeds/256")
+    user.send_trigger_notification(@debug_json, "www.pachube.com")
   end
 end
