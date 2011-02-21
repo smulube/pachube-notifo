@@ -1,0 +1,32 @@
+{ "environment": {
+    "description": "", 
+    "feed": "http:\/\/api.pachube.com\/v2\/feeds\/256", 
+    "id": 256, 
+    "location": {
+      "lat": "39.9966023193454", 
+      "lon": "-105.261737108231", 
+      "name": "Space Weather Prediction Center"
+    }, 
+    "title": "space weather"
+    }, 
+    "id": 336, 
+    "threshold_value": "3", 
+    "timestamp": "2011-01-28T15:53:38Z", 
+    "triggering_datastream": {
+    "id": "2", 
+    "units": {
+      "label": "", 
+      "symbol": "", 
+      "type": ""
+    }, 
+    "url": "http:\/\/api.pachube.com\/v2\/feeds\/256\/datastreams\/2", 
+    "value": {
+    "max_value": 23.2, 
+    "min_value": 0.1, 
+    "value": "4.7"
+    }
+  }, 
+  "type": "gt", 
+  "url": "http:\/\/api.pachube.com\/v2\/triggers\/336",
+  "debug": true
+}
